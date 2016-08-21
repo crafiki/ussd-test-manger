@@ -1,7 +1,8 @@
 # wp-plugin-CRUD
 a wordpress plugin for the CRUD
 
-
+### 
+URL : http://kasha.dev/ussd-gateway/
 ## OLTRANZ API
 The request are in XML format as follows:
 
