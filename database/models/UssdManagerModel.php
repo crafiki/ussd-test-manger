@@ -21,6 +21,13 @@ class UssdManagerModel{
 	 * @var null
 	 */
 	protected $condition = '';
+
+	/**
+	 * Order by 
+	 * @var string
+	 */
+	protected $orderBy = '';
+	
 	/**
 	 * Primary key of this table
 	 * @var string
@@ -44,7 +51,7 @@ class UssdManagerModel{
 	 */
 	public function get()
 	{
-		return  $this->db->get_results("SELECT * from ".$this->table.$this->condition);
+		return  $this->db->get_results("SELECT * from ".$this->table.$this->condition.$this->orderBy);
 	}
 
     /**
@@ -57,7 +64,15 @@ class UssdManagerModel{
 		$results = $this->where([$this->primaryKey=>$id])->get();
 		return isset($results[0]) ? $results[0] : null;
 	}
-
+	/**
+	 * Get first element in the records
+	 * 
+	 * @return array | null
+	 */
+	public function first()
+	{
+		return isset($this->get()[0]) ? $this->get()[0] : null;
+	}
     /**
 	 * Save / update a resource in the DB
 	 * @param  array  $data 
@@ -106,22 +121,43 @@ class UssdManagerModel{
 	}
 
 	/**
+	 * Order a record in a given order
+	 * @param  string $columnName name to be ordered
+	 * @param  string $order      ASC/DESC
+	 * @return $this
+	 */
+	public function orderBy($columnName,$order = 'ASC')
+	{
+		$this->orderBy = ' ORDER BY '.$columnName.' '.$order;
+		return $this;
+	}
+	/**
 	 * Adding condition to the query based on the input
 	 * @param  array  $array
 	 * @return $this
 	 */
 	public function where(array $conditions)
 	{
-		$this->condition = ' WHERE ';
+		// If we already have a where condition 
+		// then do not set this to the initial 
+		// ones
+		if (is_null($this->condition) || empty($this->condition)) {
+				$this->condition = ' WHERE ';
+		}
+		
+		$this->condition .='(';
 		foreach ($conditions as $key => $value) {
-			if (strtolower(trim($this->condition)) !=='where') {
+			if (strtolower(trim($this->condition)) !=='where' and strtolower(trim($this->condition)) !=='where (') {
 				$this->condition = $this->condition . ' AND ';
 			}
 			$this->condition = $this->condition . ' '.$key.' = '.$value;
+
 		}
+		$this->condition .=')';
 
 		return $this;
 	}
+
 
 	/**
 	 * Set properties of the class

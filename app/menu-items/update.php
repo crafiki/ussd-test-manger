@@ -1,7 +1,7 @@
 <link type="text/css" href="<?php echo WP_PLUGIN_URL; ?>/ussd-manager/assets/style-admin.css" rel="stylesheet" />
 <?php
 function kashaUssdMenuItemUpdate () {
-	
+	$wooCommerceItems = (new KashaUssdMenuItem)->wooCommerceItems();
 ?>
 
 <!-- IF THE USER CLICKED ON DELETE BUTTON THEN DELETE -->
@@ -27,11 +27,12 @@ function kashaUssdMenuItemUpdate () {
 <form method="post" action="<?php echo $_SERVER['REQUEST_URI']; ?>">
 <input type="hidden" name="id" value="<?php echo $item->id?>"/>
 <table class='wp-list-table widefat fixed'>
-<tr><th>Woocommerce Product id</th><td><input type="text" name="woocommerce_item_id" value="<?php echo $item->woocommerce_item_id;?>"/></td></tr>
-<tr><th>Name</th><td><input type="text" name="name" value="<?php echo $item->name;?>"/></td></tr>
-<tr><th>Price</th><td><input type="text" name="price" value="<?php echo $item->price;?>"/></td></tr>
-<tr><th>Quantity</th><td><input type="text" name="quantity" value="<?php echo $item->quantity;?>"/></td>
-<tr><th>Menu order</th><td><input type="text" name="quantity" value="<?php echo $item->order;?>"/></td>
+  <select name="woocommerce_item_id">
+  	<?php foreach($wooCommerceItems as $item): ?>
+  		<option value="<?php echo $item->id; ?>"> <?php echo $item->id.'.'. $item->name.'('.$item->price.get_woocommerce_currency_symbol() .')'; ?> </option>
+  	<?php endforeach;?>
+  </select>
+<tr><th>Menu order</th><td><input type="text" name="quantity" value="<?php echo $item->menu_order;?>"/></td>
 
 </tr>
 

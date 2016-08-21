@@ -65,54 +65,47 @@ class UssdFlowRepository{
 		$this->rawRequest = $rawInput;
 		$this->sessionData = $this->getSanatized();
 
-		// Determine which level of USSD we are at
-		$session = $this->ussdSession->where(['msisdn'=>$this->sessionData['msisdn'],'sessionid'=>$this->sessionData['sessionid']]);
+		try
+		{
+			// Determine which level of USSD we are at
+			$session = $this->ussdSession->where(['msisdn'=>$this->sessionData['msisdn'],'sessionid'=>$this->sessionData['sessionid']]);
 
-		$nextMenu = '';
+			$nextMenu = '';
 
+			// Determine parent
+			switch ($session->count()) {
+				case 0:      // This is the first entry
 
-		// Determine parent
-		switch ($session->count()) {
-			case 0:      // This is the first entry
+					$nextMenu              = $this->getFirstMenu();
+					break;
+				default:
+					// Determine which parent
+					$previousChoice= $session->orderBy('created_at','desc')->first();
+					$message = 'Thank you for your purchase';
+				    $nextMenu = $this->buildResponse($this->sessionData,$message);
+					break;
+			}
+			
+			$this->sessionData['raw_response'] = $nextMenu;
+			// Log the session
+			if(!$this->logSession($this->sessionData)){
+				throw new Exception("Unable to process ussd session", 1);
+			}
 
-				$nextMenu              = $this->getFirstMenu();
-				break;
-			default:
-				// Determine which parent
-				$previousChoice= $session->orderBy('created_at','desc')->first();
-
-				$menu = UssdMenu::where(['menu_parent'=>$previousChoice->menu_id,'order'=>$ussdData['input']])->first();
-
-				// In case use has selected option we don't have
-				if (is_null($menu)) {
-					throw new UnableToSaveUssdSessionException("Unable to process ussd session", 1);
-				}
-
-				$ussdData['parent_id'] = $menu->menu_parent;
-				$ussdData['menu_id']   = $menu->id;
-				break;
+			return $nextMenu;
 		}
-		
-		// Log the session
-		if(!$this->logSession($ussdData)){
-			throw new Exception("Unable to process ussd session", 1);
+		catch(Exception $ex)
+		{
+			$this->sessionData['raw_response'] = 'Sorry but error occured while processing your request.Error:'.$ex->getMessage();
+			$message = 'Sorry but error occured while processing your request';
+	    	return   $this->buildResponse($this->sessionData,$message);
 		}
-
-		// // Get next menu
-		// $nextOptions =  UssdMenu::where('menu_parent',$ussdData['menu_id'])->orderBy('order')->get();
-
-		// foreach ($nextOptions as $option) {
-
-		// 	$nextMenu = $nextMenu . '<br/>'. $option->order .'.'. $option->menu_key;
-		// }
-
-		return $nextMenu;
 	}
 
     protected function getFirstMenu()
     {
     	$message = 'Welcome to KASHA Store';
-    	$menus   = ['PRODUCT 1','Product 2','Product 3'];
+    	$menus   = $this->ussdMenuItem->orderBy('menu_order')->get();
     	return   $this->buildResponse($this->sessionData,$message,$menus);
     }
 	/**
@@ -168,8 +161,8 @@ class UssdFlowRepository{
 	 // show it here then.
      // Building options
 	  $menu = '';
-	  foreach ($responseMenu as $key => $value) {
-	  		 $menu .= '<MENU>'.++$key.'.'.$value.'</MENU>';
+	  foreach ($responseMenu as $key => $item) {
+	  		 $menu .= '<MENU>'.++$key.'.'.$item->name.'('.$item->price.get_woocommerce_currency_symbol().')</MENU>';
 	  }
    	 
    	  // ADD OPTIONS
