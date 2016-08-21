@@ -1,6 +1,6 @@
 <?php
 function kashaUssdMenuItemCreate () {
-	
+	var_dump((new KashaUssdMenuItem)->wooCommerceItems());exit;
 ?>
 <!-- IF THE USER CLICKED ON UPDATE BUTTON THEN UPDATE -->
 <?php if ($_POST['save'] && (new KashaUssdMenuItem)->save($_POST) > 0) : 	; ?>

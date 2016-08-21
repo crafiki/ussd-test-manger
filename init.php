@@ -75,16 +75,25 @@ ini_set('display_errors', '1');
 require_once(ROOTDIR . '/database/models/UssdManagerModel.php');
 require_once(ROOTDIR . '/database/models/KashaUssdAddress.php');
 require_once(ROOTDIR . '/database/models/kashaUssdMenuItem.php');
+require_once(ROOTDIR . '/database/models/kashaUssdSession.php');
 
 // LOAD HELPERS
 require_once(ROOTDIR . '/app/helpers/functions.php');
+require_once(ROOTDIR . '/app/repositories/UssdFlowRepository.php');
 
-// ADDRESSES PART
-require_once(ROOTDIR . '/app/addresses/list.php');
-require_once(ROOTDIR . '/app/addresses/create.php');
-require_once(ROOTDIR . '/app/addresses/update.php');
+// FRONT END 
+require_once(ROOTDIR . '/app/frontend/ussd-gateway.php');
 
-// MENU ITEMS PART
-require_once(ROOTDIR . '/app/menu-items/list.php');
-require_once(ROOTDIR . '/app/menu-items/create.php');
-require_once(ROOTDIR . '/app/menu-items/update.php');
+// ONLY SHOW THIS IF WE ARE NOT CALLING API GW
+if (strpos($actual_link, 'ussd-gateway') === false) 
+{
+	// ADDRESSES PART
+	require_once(ROOTDIR . '/app/addresses/list.php');
+	require_once(ROOTDIR . '/app/addresses/create.php');
+	require_once(ROOTDIR . '/app/addresses/update.php');
+
+	// MENU ITEMS PART
+	require_once(ROOTDIR . '/app/menu-items/list.php');
+	require_once(ROOTDIR . '/app/menu-items/create.php');
+	require_once(ROOTDIR . '/app/menu-items/update.php');
+}

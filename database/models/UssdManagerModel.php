@@ -76,6 +76,15 @@ class UssdManagerModel{
 		return $this->db->insert($this->table,$data);
 	}
 
+	/**
+	 * Get current records count
+	 * @return 
+	 */
+	public function count()
+	{
+		return count($this->get());
+	}
+	
    /**
 	 * Check if a transaction exists
 	 * @param  string $id 

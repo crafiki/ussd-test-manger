@@ -1,6 +1,5 @@
 <?php
 function kashaUssdMenuItems () {
-	var_dump(get_woocommerce_product_list());exit;
 ?>
 <link type="text/css" href="<?php echo WP_PLUGIN_URL; ?>/ussd-manager/assets/style-admin.css" rel="stylesheet" />
 <div class="wrap">
