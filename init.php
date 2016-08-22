@@ -76,6 +76,7 @@ require_once(ROOTDIR . '/database/models/UssdManagerModel.php');
 require_once(ROOTDIR . '/database/models/KashaUssdAddress.php');
 require_once(ROOTDIR . '/database/models/kashaUssdMenuItem.php');
 require_once(ROOTDIR . '/database/models/kashaUssdSession.php');
+require_once(ROOTDIR . '/database/models/KashaApiKey.php');
 
 // LOAD HELPERS
 require_once(ROOTDIR . '/app/helpers/functions.php');

@@ -2,8 +2,19 @@
 
  function processUssd()
  {
- 	    // SETTING RESPONSE HEADER
+ 	$unauthorizedAccess = '<COMMAND><MESSAGE>You are not authorized to do this.</MESSAGE></COMMAND>';
+ 	$apiKey = new KashaAPIKey;
+ 	// SETTING RESPONSE HEADER
     header('Content-type: application/xml');
+
+    if (!isset($_GET['api_token'])) {
+    	echo $unauthorizedAccess; exit;
+    }
+
+    if ($apiKey->where(['consumer_key',$_GET['api_token']])->exists()) {
+    	echo $unauthorizedAccess; exit;
+    }
+
  	// Get submitted information
  	$submittedData = getRawInput();
    

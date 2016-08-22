@@ -2,7 +2,7 @@
 a wordpress plugin for the CRUD
 
 ### 
-URL : http://kasha.dev/ussd-gateway/
+URL : http://kasha.dev/ussd-gateway/?api_token=01d476056a510e8357d52b44eb536b6b704ae3f0979b062455d504e84c31c679
 ## OLTRANZ API
 The request are in XML format as follows:
 
