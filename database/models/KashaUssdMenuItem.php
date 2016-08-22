@@ -35,17 +35,19 @@ class KashaUssdMenuItem extends UssdManagerModel{
 	 return $products;
 	}
 
-  /**
+  	/**
 	 * Get all transactions fromt the current table
-	 * @param  numerci id $value 
-	 * @param  numerci $limit 
-	 * @param  numeric $offset
+	 * @param  array $columns 
 	 * @return array   
 	 */
-	public function get()
-	{
+	public function get($columns = [])
+	{	
+		 $columns = count($columns) > 0 ? implode(',',$columns) : ' * ';
 
-		 $items =  $this->db->get_results("SELECT * from ".$this->table.$this->condition.$this->orderBy);
+		 $sqlQuery = "SELECT $columns from ".$this->table.$this->condition.$this->orderBy.$this->limit;
+
+		 $items =  $this->db->get_results( $sqlQuery);
+
 		 $products = [];
 		 foreach ($items as $menuItem) {
 
@@ -61,6 +63,47 @@ class KashaUssdMenuItem extends UssdManagerModel{
 		 	 $products[] = $item ;
 		 }
 		 return $products;
+	}
+
+	/**
+	 * Get product ids
+	 * @param  array  $columns 
+	 * @return array 
+	 */
+	public function getProductIds($columns = [])
+	{
+		 $columns = count($columns) > 0 ? implode(',',$columns) : ' * ';
+		 $sqlQuery = "SELECT $columns from ".$this->table.$this->condition.$this->orderBy.$this->limit;
+		 
+		 $results = $this->db->get_results( $sqlQuery);
+		 $productIds = [];
+		 foreach ($results as $key => $item) {
+		 	$productIds[] = $item->woocommerce_item_id;
+		 }
+
+		 return $productIds;
+	}
+
+	/**
+	 * migrate
+	 * @return 
+	 */
+	public function migrate()
+	{
+	$charset_collate = $this->db->get_charset_collate();
+	$query = "CREATE TABLE IF NOT EXISTS  ".$this->table." (
+							  `id` int(11) NOT NULL,
+							  `woocommerce_item_id` int(11) UNIQUE NOT NULL,
+							  `name` varchar(200) DEFAULT NULL,
+							  `price` varchar(200) DEFAULT NULL,
+							  `quantity` varchar(200) DEFAULT NULL,
+							  `menu_order` int(11) NOT NULL DEFAULT '1',
+							  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+							  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP,
+							   PRIMARY KEY (`id`)
+							) $charset_collate;";
+
+	$this->db->query( $query );
 	}
 
 }

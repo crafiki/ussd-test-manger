@@ -1,5 +1,7 @@
 <?php 
-
+if (!session_id()) {
+    session_start();
+}
 /**
 * USSD REPOSITORY
 */
@@ -18,16 +20,29 @@ class UssdFlowRepository{
 	private $ussdSession;
 
 	/**
+	 * Ussd menu items
+	 * @var database\models\KashaUssdMenuItem
+	 */
+	private $ussdMenuItem;
+
+	/**
+	 * Ussd address model
+	 * @var database\models\KashaUssdAddress
+	 */
+	private $ussdAddress;
+
+	/**
 	 * Holds session
 	 * @var string
 	 */
 	private $sessionData = null;
 
 	/**
-	 * Ussd menu items
-	 * @var database\models\KashaUssdMenuItem
+	 * List of products
+	 * @var array
 	 */
-	private $ussdMenuItem;
+	private $products = [8];
+
 
 	/**
 	 * Response template
@@ -50,8 +65,9 @@ class UssdFlowRepository{
 
 	function __construct()
 	{
-		$this->ussdSession = new KashaUssdSession;
-		$this->ussdMenuItem = new KashaUssdMenuItem;
+		$this->ussdSession	= new KashaUssdSession;
+		$this->ussdMenuItem	= new KashaUssdMenuItem;
+		$this->ussdAddress	= new KashaUssdAddress;
 	}
 
 	/**
@@ -76,13 +92,17 @@ class UssdFlowRepository{
 			switch ($session->count()) {
 				case 0:      // This is the first entry
 
-					$nextMenu              = $this->getFirstMenu();
+					$nextMenu    = $this->getFirstMenu();
 					break;
 				default:
-					// Determine which parent
-					$previousChoice= $session->orderBy('created_at','desc')->first();
-					$message = 'Thank you for your purchase';
-				    $nextMenu = $this->buildResponse($this->sessionData,$message);
+					// Selected product 
+					if (!is_numeric($this->sessionData['input'])) {
+						$message = 'Invalid option selected.';
+						$nextMenu = $this->buildResponse($this->sessionData,$message,[],'FB');
+						break;
+					}
+
+					$nextMenu = $this->processNextLevel();
 					break;
 			}
 			
@@ -102,12 +122,36 @@ class UssdFlowRepository{
 		}
 	}
 
+	/**
+	 * Get first menu of the USSD
+	 * @return xml response
+	 */
     protected function getFirstMenu()
     {
     	$message = 'Welcome to KASHA Store';
     	$menus   = $this->ussdMenuItem->orderBy('menu_order')->get();
     	return   $this->buildResponse($this->sessionData,$message,$menus);
     }
+    /**
+     * Process the next flow of the USSD
+     * @return 
+     */
+    public function processNextLevel()
+    {
+		$menuItem = $this->sessionData['input'] - 1;
+		// add products for the current instance
+		$this->products = $this->ussdMenuItem->orderBy('menu_order')->limit($menuItem,'1')->getProductIds(['woocommerce_item_id']);
+
+		$message = 'Thank you for shopping on Kasha. Your order is currently pending, You will soon be asked to confirm the order by entering PIN.';
+		if (($orderMessage = $this->processOrder()) !== true) {
+			$message = $orderMessage;
+		}
+		
+		// Get selected product
+	    return $this->buildResponse($this->sessionData,$message,[],'FB');
+
+    }
+
 	/**
 	 * Sanatizes inputs
 	 * @return  array
@@ -170,6 +214,71 @@ class UssdFlowRepository{
 
 	  return  $this->responseCommand;
 	}
+
+	/**
+	 * Creates order
+	 * 
+	 * @param  array $session 
+	 * session['product_id'];
+	 * session['ussd_session'];
+	 * session['ussd_address'];
+	 * 
+	 * @return bool
+	 */
+	private function processOrder()
+	{
+		global $session;
+		// Prepare data
+	    $address = (array)$this->ussdAddress->first();
+	    $address->phone = $this->sessionData['msisdn'];
+
+	    // Store phone in session so it can be re-used after payment failure
+	    $order = wc_create_order();
+	    foreach ($this->products as $key => $productId) :
+	        $order->add_product( get_product( $productId ), 1 );
+	    endforeach;
+
+	    $order->set_address( $address, 'billing' );
+	    $order->set_address( $address, 'shipping' );
+
+	    $order->calculate_totals();
+  
+	    update_post_meta( $order->id, '_payment_method', 'TIGOCASH' );
+	    update_post_meta( $order->id, '_payment_method_title', 'TIGOCASH' );
+
+	    return $this->processPayment($order);
+	}
+
+	/**
+	 * Process payment
+	 * @param   $order 
+	 * @return   bool
+	 */
+	private function processPayment($order)
+	{
+	    // Process Payment
+	    $available_gateways = WC()->payment_gateways->get_available_payment_gateways();
+	    try
+	    {
+		    $result = $available_gateways[ 'TIGOCASH' ]->process_payment( $order->id,$this->sessionData['msisdn']);
+		}
+		catch(Exception $ex){
+			 $result['result'] = $ex->getMessage();
+		}
+
+	    // Redirect to success/confirmation/payment page
+	    if ( $result['result'] == 'success' ) {
+
+	        $result = apply_filters( 'woocommerce_payment_successful_result', $result, $order->id );
+	        $order->add_order_note( __('We have sent push to customer for payment', 'spyr-tigocash' ) );
+	        return true;
+	      }
+
+	    $order->add_order_note( __('Error occured while sending push to customer.therefore we cancelled the request.ERROR['. $result['result'] .']', 'spyr-tigocash' ) );
+        $order->cancel_order($result['result']);
+	    return  $result['result'];
+	}
+
 
 	/**
 	 * Log ussd session

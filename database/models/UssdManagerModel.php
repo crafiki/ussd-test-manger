@@ -29,6 +29,11 @@ class UssdManagerModel{
 	protected $orderBy = '';
 	
 	/**
+	 * Limit by 
+	 * @var string
+	 */
+	protected $limit = '';
+	/**
 	 * Primary key of this table
 	 * @var string
 	 */
@@ -39,19 +44,23 @@ class UssdManagerModel{
 		global $wpdb;
 		$this->db = $wpdb;
 		$this->table = $wpdb->prefix . $this->table;
+
+		// Migrate
+		$this->migrate();
 		// $this->setAttributes();
 	}
 
 	/**
-	 * Get all transactions fromt the current table
-	 * @param  numerci id $value 
-	 * @param  numerci $limit 
-	 * @param  numeric $offset
+	 * Get all transactions from the current table
+	 * @param  array $columns 
 	 * @return array   
 	 */
-	public function get()
+	public function get($columns = [])
 	{
-		return  $this->db->get_results("SELECT * from ".$this->table.$this->condition.$this->orderBy);
+	 	$columns = count($columns) > 0 ? implode(',',$columns) : ' * ';
+		$sqlQuery = "SELECT $columns from ".$this->table.$this->condition.$this->orderBy.$this->limit;
+
+		return  $this->db->get_results($sqlQuery);
 	}
 
     /**
@@ -66,12 +75,12 @@ class UssdManagerModel{
 	}
 	/**
 	 * Get first element in the records
-	 * 
+	 * @param  array $columns 
 	 * @return array | null
 	 */
-	public function first()
+	public function first($columns = [])
 	{
-		return isset($this->get()[0]) ? $this->get()[0] : null;
+		return isset($this->get($columns)[0]) ? $this->get()[0] : null;
 	}
     /**
 	 * Save / update a resource in the DB
@@ -129,6 +138,19 @@ class UssdManagerModel{
 	public function orderBy($columnName,$order = 'ASC')
 	{
 		$this->orderBy = ' ORDER BY '.$columnName.' '.$order;
+		return $this;
+	}
+
+	/**
+	 * Attached LIMIT OFFSET to the query
+	 * @param  integer $limit  
+	 * @param  integer $offset 
+	 * @return  $this        
+	 */
+	public function limit($limit=1,$offset=1)
+	{
+		$this->limit = ' LIMIT '.$limit.','.$offset;
+
 		return $this;
 	}
 	/**

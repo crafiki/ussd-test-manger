@@ -169,4 +169,62 @@ class PaymentGateWay
 		throw new Exception($message, 1);
 		
 	}
+
+	/**
+	 * Creates order
+	 * 
+	 * @param  array $session 
+	 * session['product_id'];
+	 * session['ussd_session'];
+	 * session['ussd_address'];
+	 * 
+	 * @return bool
+	 */
+	public function createOrder($session)
+	{
+
+	    $address = array(
+	        'first_name' => $_POST['notes']['domain'],
+	        'last_name'  => '',
+	        'company'    => $_POST['customer']['company'],
+	        'email'      => $_POST['customer']['email'],
+	        'phone'      => $_POST['customer']['phone'],
+	        'address_1'  => $_POST['customer']['address'],
+	        'address_2'  => '', 
+	        'city'       => $_POST['customer']['city'],
+	        'state'      => '',
+	        'postcode'   => $_POST['customer']['postalcode'],
+	        'country'    => 'NL'
+	    );
+
+	    $order = wc_create_order();
+	    foreach ($_POST['product_order'] as $productId => $productOrdered) :
+	        $order->add_product( get_product( $productId ), 1 );
+	    endforeach;
+
+	    $order->set_address( $address, 'billing' );
+	    $order->set_address( $address, 'shipping' );
+
+	    $order->calculate_totals();
+
+	    update_post_meta( $order->id, '_payment_method', 'ideal' );
+	    update_post_meta( $order->id, '_payment_method_title', 'iDeal' );
+
+	    // Store Order ID in session so it can be re-used after payment failure
+	    WC()->session->order_awaiting_payment = $order->id;
+
+	    // Process Payment
+	    $available_gateways = WC()->payment_gateways->get_available_payment_gateways();
+	    $result = $available_gateways[ 'ideal' ]->process_payment( $order->id );
+
+	    // Redirect to success/confirmation/payment page
+	    if ( $result['result'] == 'success' ) {
+
+	        $result = apply_filters( 'woocommerce_payment_successful_result', $result, $order->id );
+
+	        wp_redirect( $result['redirect'] );
+	        exit;
+	    }
+
+	}
 }
