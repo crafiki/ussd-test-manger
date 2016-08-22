@@ -91,10 +91,11 @@ class UssdFlowRepository{
 			// Determine parent
 			switch ($session->count()) {
 				case 0:      // This is the first entry
-
+					$this->sessionData['slug'] = 'initial-request';
 					$nextMenu    = $this->getFirstMenu();
 					break;
 				default:
+					$this->sessionData['slug'] = 'chose-product';
 					// Selected product 
 					if (!is_numeric($this->sessionData['input'])) {
 						$message = 'Invalid option selected.';

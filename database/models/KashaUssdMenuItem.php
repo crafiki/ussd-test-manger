@@ -92,7 +92,7 @@ class KashaUssdMenuItem extends UssdManagerModel{
 	{
 	$charset_collate = $this->db->get_charset_collate();
 	$query = "CREATE TABLE IF NOT EXISTS  ".$this->table." (
-							  `id` int(11) NOT NULL,
+							  `id` int(11) AUTO_INCREMENT NOT NULL,
 							  `woocommerce_item_id` int(11) UNIQUE NOT NULL,
 							  `name` varchar(200) DEFAULT NULL,
 							  `price` varchar(200) DEFAULT NULL,

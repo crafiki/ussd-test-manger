@@ -18,7 +18,7 @@ class KashaUssdSession extends UssdManagerModel{
 	{
 	$charset_collate = $this->db->get_charset_collate();
 	$query =   "CREATE TABLE IF NOT EXISTS  ".$this->table." (
-				  `id` int(11) NOT NULL,
+				  `id` int(11) AUTO_INCREMENT NOT NULL,
 				  `msisdn` varchar(200) DEFAULT NULL,
 				  `sessionid` varchar(200) DEFAULT NULL,
 				  `newrequest` varchar(200) DEFAULT NULL,
