@@ -71,7 +71,7 @@ function kasha_ussd_modifymenu() {
 
 
 define('ROOTDIR', plugin_dir_path(__FILE__));
-ini_set('display_errors', '1');
+// ini_set('display_errors', '1');
 require_once(ROOTDIR . '/database/models/UssdManagerModel.php');
 require_once(ROOTDIR . '/database/models/KashaUssdAddress.php');
 require_once(ROOTDIR . '/database/models/KashaUssdMenuItem.php');

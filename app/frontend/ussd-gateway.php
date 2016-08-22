@@ -48,7 +48,7 @@ if (strpos($actual_link, 'ussd-gateway') !== false)
  //add rewrite rules in case another plugin flushes rules
  add_action('init', 'ussdGateWayRules');
  //add plugin query vars (product_id) to wordpress
- add_filter('query_vars', 'ussdGateWay_query_vars');
+ // add_filter('query_vars', 'ussdGateWay_query_vars');
  //register plugin custom pages display
  add_filter('template_redirect', 'processUssd');
 }
