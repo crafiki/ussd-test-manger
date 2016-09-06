@@ -6,7 +6,7 @@ function kashaUssdAddressCreate () {
 <?php if ($_POST['save'] && (new KashaUssdAddress)->save($_POST) > 0) : 	; ?>
   <div class="updated"><p>Address added</p></div>
   <a href="<?php echo admin_url('admin.php?page=kasha_ussd_list') ?>">&laquo; Back to Addresss list</a>
-<?php exit; endif;?>
+<?php endif;?>
 
 
 <div class="wrap">
@@ -33,3 +33,4 @@ function kashaUssdAddressCreate () {
 </div>
 <?php
 }
+?>
