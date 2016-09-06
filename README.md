@@ -1,5 +1,4 @@
-# wp-plugin-CRUD
-a wordpress plugin for the CRUD
+# KASHA USSD GW
 
 ### 
 URL : http://kasha.dev/ussd-gateway/?api_token=01d476056a510e8357d52b44eb536b6b704ae3f0979b062455d504e84c31c679
