@@ -1,9 +1,8 @@
-<link type="text/css" href="<?php echo WP_PLUGIN_URL; ?>/ussd-manager/assets/style-admin.css" rel="stylesheet" />
 <?php
 function kashaUssdAddressUpdate () {
 	
 ?>
-
+<link type="text/css" href="<?php echo WP_PLUGIN_URL; ?>/ussd-manager/assets/style-admin.css" rel="stylesheet" />
 <!-- IF THE USER CLICKED ON DELETE BUTTON THEN DELETE -->
 <?php if ($_POST['delete']) :	(new KashaUssdAddress)->delete($_GET['id']);?>
   <div class="updated"><p>Address deleted</p></div>

@@ -3,16 +3,6 @@ function kashaUssdMenuItems () {
 ?>
 
 <link type="text/css" href="<?php echo WP_PLUGIN_URL; ?>/ussd-manager/assets/style-admin.css" rel="stylesheet" />
-<style>
-  img{
-  	margin: 0;
-    width: auto;
-    height: auto;
-    max-width: 40px;
-    max-height: 40px;
-    vertical-align: middle;
-  }
-</style>
 <div class="wrap">
 <h2>Addresses</h2>
 <a href="<?php echo admin_url('admin.php?page=kasha_ussd_menu_item_create'); ?>" class="page-title-action">Add Menu item</a>
