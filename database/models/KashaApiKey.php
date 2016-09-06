@@ -11,4 +11,11 @@ class KashaApiKey extends UssdManagerModel{
 	 */
 	protected $table = 'woocommerce_api_keys';
 
+     /**
+	 * Migrate the table just to be compliant with the interface
+	 * @return 
+	 */
+	public function migrate()
+	{
+	}
 }

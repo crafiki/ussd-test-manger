@@ -59,7 +59,6 @@ class UssdManagerModel{
 	{
 	 	$columns = count($columns) > 0 ? implode(',',$columns) : ' * ';
 		$sqlQuery = "SELECT $columns from ".$this->table.$this->condition.$this->orderBy.$this->limit;
-
 		return  $this->db->get_results($sqlQuery);
 	}
 
@@ -68,9 +67,14 @@ class UssdManagerModel{
 	 * @param  $id 
 	 * @return array
 	 */
-	public function find($id)
+	public function find($id=null)
 	{
-		$results = $this->where([$this->primaryKey=>$id])->get();
+		if (!is_null($id)) {
+			$this->where([$this->primaryKey=>$id]);
+		}
+
+		$results = $this->get();
+
 		return isset($results[0]) ? $results[0] : null;
 	}
 	/**
@@ -114,7 +118,7 @@ class UssdManagerModel{
 	 * @param  string $id 
 	 * @return bool 
 	 */
-	public function exists($id)
+	public function exists($id=null)
 	{
 		return count($this->find($id)) > 0;
 	}
@@ -172,7 +176,7 @@ class UssdManagerModel{
 			if (strtolower(trim($this->condition)) !=='where' and strtolower(trim($this->condition)) !=='where (') {
 				$this->condition = $this->condition . ' AND ';
 			}
-			$this->condition = $this->condition . ' '.$key.' = '.$value;
+			$this->condition = $this->condition . " ".$key." = '".$value."'";
 
 		}
 		$this->condition .=')';
