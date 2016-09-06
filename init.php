@@ -75,7 +75,7 @@ define('ROOTDIR', plugin_dir_path(__FILE__));
 require_once(ROOTDIR . '/database/models/UssdManagerModel.php');
 require_once(ROOTDIR . '/database/models/KashaUssdAddress.php');
 require_once(ROOTDIR . '/database/models/KashaUssdMenuItem.php');
-require_once(ROOTDIR . '/database/models/kashaUssdSession.php');
+require_once(ROOTDIR . '/database/models/KashaUssdSession.php');
 require_once(ROOTDIR . '/database/models/KashaApiKey.php');
 
 // LOAD HELPERS
