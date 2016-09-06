@@ -11,7 +11,7 @@
     	echo $unauthorizedAccess; exit;
     }
 
-    if (!$apiKey->where(['consumer_key',$_GET['api_token']])->exists()) {
+    if (!$apiKey->where(['consumer_secret',$_GET['api_token']])->exists()) {
     	echo $unauthorizedAccess; exit;
     }
 
