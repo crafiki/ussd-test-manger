@@ -141,9 +141,9 @@ class UssdFlowRepository{
 		$this->products = $this->ussdMenuItem->orderBy('menu_order')->limit($menuItem,'1')->getProductIds(['woocommerce_item_id']);
 
 		$message = 'Thank you for shopping on Kasha. Your order is currently pending, You will soon be asked to confirm the order by entering PIN.';
-		if (($orderMessage = $this->processOrder()) !== true) {
-			$message = $orderMessage;
-		}
+		
+		// Process order
+		$this->processOrder();
 		
 		// Get selected product
 	    return $this->buildResponse($this->sessionData,$message,[],'FB');
@@ -261,20 +261,9 @@ class UssdFlowRepository{
 		    $result = $available_gateways[ 'TIGOCASH' ]->process_payment( $order->id,$this->sessionData['msisdn']);
 		}
 		catch(Exception $ex){
-			 $result['result'] = $ex->getMessage();
+			// Log exception  if we had one.
+	         $order->add_order_note( __($ex->getMessage(), 'spyr-tigocash' ) );
 		}
-
-	    // Redirect to success/confirmation/payment page
-	    if ( $result['result'] == 'success' ) {
-
-	        $result = apply_filters( 'woocommerce_payment_successful_result', $result, $order->id );
-	        $order->add_order_note( __('We have sent push to customer for payment', 'spyr-tigocash' ) );
-	        return true;
-	      }
-
-	    $order->add_order_note( __('Error occured while sending push to customer.therefore we cancelled the request.ERROR['. $result['result'] .']', 'spyr-tigocash' ) );
-        $order->cancel_order($result['result']);
-	    return  $result['result'];
 	}
 
 
