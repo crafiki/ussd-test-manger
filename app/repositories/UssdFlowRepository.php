@@ -191,7 +191,7 @@ class UssdFlowRepository{
 	 $this->responseCommand = str_replace('PARAM_FREEFLOW',$freeflow,$this->responseCommand);
 
 	 // ADD MESSAGE to the response
-	 $this->responseCommand = str_replace('PARAM_MESSAGE',$message,$this->responseCommand);
+	 $this->responseCommand = str_replace('PARAM_MESSAGE',$message.'^',$this->responseCommand);
 
 	 if (empty($responseMenu) || count($responseMenu) == 0) {
 	 	 $this->responseCommand = str_replace('PARAM_MENUS','',$this->responseCommand);
@@ -204,7 +204,7 @@ class UssdFlowRepository{
      // Building options
 	  $menu = '';
 	  foreach ($responseMenu as $key => $item) {
-	  		 $menu .= '<MENU>'.++$key.'.'.$item->name.'('.$item->price.get_woocommerce_currency_symbol().')</MENU>';
+	  		 $menu .= '<MENU>'.++$key.'.'.$item->name.'('.$item->price.get_woocommerce_currency_symbol().')^</MENU>';
 	  }
    	 
    	  // ADD OPTIONS
