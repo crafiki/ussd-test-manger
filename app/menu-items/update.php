@@ -3,13 +3,15 @@ function kashaUssdMenuItemUpdate () {
 	?>
 <link type="text/css" href="<?php echo WP_PLUGIN_URL; ?>/ussd-manager/assets/style-admin.css" rel="stylesheet" />
 <!-- IF THE USER CLICKED ON DELETE BUTTON THEN DELETE -->
-<?php if (isset($_POST['delete'])) :	(new KashaUssdMenuItem)->delete($_GET['id']);?>
+<?php if (isset($_POST['delete'])) :	
+ (new KashaUssdMenuItem)->delete($_GET['id']);?>
   <div class="updated"><p>item deleted</p></div>
   <a href="<?php echo admin_url('admin.php?page=kasha_ussd_menu_item_list') ?>">&laquo; Back to items list</a>
 <?php exit; endif;?>
 
 <!-- IF THE USER CLICKED ON UPDATE BUTTON THEN UPDATE -->
-<?php if (isse($_POST['update'])) : 	(new KashaUssdMenuItem)->save($_POST); ?>
+<?php if (isse($_POST['update'])) : 	
+ (new KashaUssdMenuItem)->save($_POST); ?>
   <div class="updated"><p>item updated</p></div>
   <a href="<?php echo admin_url('admin.php?page=kasha_ussd_menu_item_list') ?>">&laquo; Back to items list</a>
 <?php endif;?>
