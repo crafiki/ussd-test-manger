@@ -14,7 +14,7 @@ function kashaUssdMenuItemUpdate () {
  (new KashaUssdMenuItem)->save($_POST); ?>
   <div class="updated"><p>item updated</p></div>
   <a href="<?php echo admin_url('admin.php?page=kasha_ussd_menu_item_list') ?>">&laquo; Back to items list</a>
-<?php endif;?>
+<?php exit; endif;?>
 <!-- GET items based on the provided id -->
 <?php $item = (new KashaUssdMenuItem)->get()[0];?>
 
