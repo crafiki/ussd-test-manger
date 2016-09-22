@@ -97,11 +97,13 @@ class UssdManagerModel{
 		// if available
 		unset($data['save']);
 		unset($data['update']);
-
+		
+	       if (isset($data['id'])) {
 		if ($this->exists($data['id'])) {
 			return  $this->db->update($this->table,$data,array('id'=>$data['id']));
 		}
-		return $this->db->insert($this->table,$data);
+	       }
+	    return $this->db->insert($this->table,$data);
 	}
 
 	/**
