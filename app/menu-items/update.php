@@ -10,7 +10,7 @@ function kashaUssdMenuItemUpdate () {
 <?php exit; endif;?>
 
 <!-- IF THE USER CLICKED ON UPDATE BUTTON THEN UPDATE -->
-<?php if (isse($_POST['update'])) : 	
+<?php if (isset($_POST['update'])) : 	
  (new KashaUssdMenuItem)->save($_POST); ?>
   <div class="updated"><p>item updated</p></div>
   <a href="<?php echo admin_url('admin.php?page=kasha_ussd_menu_item_list') ?>">&laquo; Back to items list</a>
