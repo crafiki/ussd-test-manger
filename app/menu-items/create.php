@@ -16,7 +16,7 @@ function kashaUssdMenuItemCreate () {
 <table class='wp-list-table widefat fixed'>
 <tr><th>Product</th>
 <td>
-  <select name="woocommerce_item_id" class="select2-drop-mask">
+  <select name="woocommerce_item_id">
   	<?php foreach($wooCommerceItems as $item): ?>
   		<option value="<?php echo $item->id; ?>"> <?php echo $item->id.'.'. $item->name.'('.$item->price.get_woocommerce_currency_symbol() .')'; ?> </option>
   	<?php endforeach;?>
