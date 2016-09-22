@@ -97,6 +97,7 @@ class UssdManagerModel{
 		// if available
 		unset($data['save']);
 		unset($data['update']);
+		unset($data['delete']);
 		
 	       if (isset($data['id'])) {
 		if ($this->exists($data['id'])) {
