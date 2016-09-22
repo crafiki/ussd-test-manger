@@ -94,7 +94,7 @@ class KashaUssdMenuItem extends UssdManagerModel{
 	$query = "CREATE TABLE IF NOT EXISTS  ".$this->table." (
 							  `id` int(11) AUTO_INCREMENT NOT NULL,
 							  `woocommerce_item_id` int(11) UNIQUE NOT NULL,
-							  `name` varchar(200) DEFAULT NULL,
+							  `name` varchar(250) DEFAULT NULL,
 							  `price` varchar(200) DEFAULT NULL,
 							  `quantity` varchar(200) DEFAULT NULL,
 							  `menu_order` int(11) NOT NULL DEFAULT '1',
