@@ -17,12 +17,14 @@ function kashaUssdMenuItemCreate () {
 <tr><th>Product</th>
 <td>
   <select name="woocommerce_item_id">
+        <option>Select a product</option>
   	<?php foreach($wooCommerceItems as $item): ?>
   		<option value="<?php echo $item->id; ?>"> <?php echo $item->id.'.'. $item->name.'('.$item->price.get_woocommerce_currency_symbol() .')'; ?> </option>
   	<?php endforeach;?>
   </select>
 </td></tr>
-<tr><th>Menue order</th><td><input type="text" name="menu_order" value=""/></td></tr>
+<tr><th>Quantity </th><td><input type="text" name="quantity" value="1" /></td></tr>
+<tr><th>Menu order</th><td><input type="text" name="menu_order" value="<?php echo count((new KashaUssdMenuItem)->get());?>"/></td></tr>
 
 </table>
 <input type='submit' name="save" value='Add' class='button button-primary'> &nbsp;&nbsp;

@@ -40,28 +40,30 @@ class KashaUssdMenuItem extends UssdManagerModel{
 	 * @param  array $columns 
 	 * @return array   
 	 */
-	public function get($columns = [])
+	public function get($columns = [],$useWoocommerceId = false )
 	{	
 		 $columns = count($columns) > 0 ? implode(',',$columns) : ' * ';
 
 		 $sqlQuery = "SELECT $columns from ".$this->table.$this->condition.$this->orderBy.$this->limit;
 
 		 $items =  $this->db->get_results( $sqlQuery);
-
 		 $products = [];
 		 foreach ($items as $menuItem) {
 
 		 	 $product = new WC_Product($menuItem->woocommerce_item_id);
-
+			
 		 	 $item = new stdClass();
-		 	 $item->id = $product->id;
+		 	 $item->id = $useWoocommerceId ? $product->id :  $menuItem->id;
 		 	 $item->menu_order = $menuItem->menu_order;
 		 	 $item->name = $product->post->post_title;
 		 	 $item->content = get_the_post_thumbnail_url($item->id , 'thumbnail') ;	 	 
 		 	 $item->price = $product->get_price();
+			 $item->quantity = $menuItem->quantity;
 
 		 	 $products[] = $item ;
+			
 		 }
+
 		 return $products;
 	}
 

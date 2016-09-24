@@ -8,11 +8,12 @@ function kashaUssdMenuItems () {
 <a href="<?php echo admin_url('admin.php?page=kasha_ussd_menu_item_create'); ?>" class="page-title-action">Add Menu item</a>
 <?php $items = (new KashaUssdMenuItem)->get();?>
 
-<table class='wp-list-table widefat fixed striped'>
+<table class='wp-list-table widefat fixed striped pages'>
 <tr>
 	<th>Order</th>
-	<th>name</th>
-	<th>price</th>
+	<th>Name</th>
+	<th>Price</th>
+	<th>Quantity</th>
 	<th></th>
 </tr>
 <?php foreach ($items as $item ): ?>
@@ -20,6 +21,7 @@ function kashaUssdMenuItems () {
 	<td><?php echo $item->menu_order;?></td>
 	<td><?php echo $item->name;?></td>
 	<td><?php echo $item->price;?></td>
+	<td><?php echo $item->quantity;?></td>
 	<td><a href='<?php echo admin_url('admin.php?page=kasha_ussd_menu_item_update&id='.$item->id) ?>' class='button button-primary button-large'>Update</a></td>
 </td>
 <?php endforeach;?>

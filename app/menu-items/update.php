@@ -6,17 +6,17 @@ function kashaUssdMenuItemUpdate () {
 <?php if (isset($_POST['delete'])) :	
  (new KashaUssdMenuItem)->delete($_GET['id']);?>
   <div class="updated"><p>item deleted</p></div>
-  <a href="<?php echo admin_url('admin.php?page=kasha_ussd_menu_item_list') ?>">&laquo; Back to items list</a>
+<a href="<?php echo admin_url('admin.php?page=kasha_ussd_menu_item_list') ?>">&laquo; Back to items list</a>
 <?php exit; endif;?>
 
 <!-- IF THE USER CLICKED ON UPDATE BUTTON THEN UPDATE -->
-<?php if (isset($_POST['update'])) : 	
- (new KashaUssdMenuItem)->save($_POST); ?>
+<?php if (isset($_POST['update'])) :
+  (new KashaUssdMenuItem)->save($_POST); ?>
   <div class="updated"><p>item updated</p></div>
   <a href="<?php echo admin_url('admin.php?page=kasha_ussd_menu_item_list') ?>">&laquo; Back to items list</a>
 <?php exit; endif;?>
 <!-- GET items based on the provided id -->
-<?php $item = (new KashaUssdMenuItem)->get()[0];?>
+<?php $item = (new KashaUssdMenuItem)->find($_GET['id']);?>
 
 
 <div class="wrap">
@@ -29,7 +29,8 @@ function kashaUssdMenuItemUpdate () {
 <table class='wp-list-table widefat fixed'>
 <tr><th> Product name </th><td><?php echo $item->id.'.'. $item->name.'('.$item->price.get_woocommerce_currency_symbol() .')'; ?></td>
 </tr>
-<tr><th>Menu order</th><td><input type="text" name="quantity" value="<?php echo $item->menu_order;?>"/></td>
+<tr><th>Quantity</th><td><input type="text" name="quantity" value="<?php echo $item->quantity;?>"/></td></tr>
+<tr><th>Menu order</th><td><input type="text" name="menu_order" value="<?php echo $item->menu_order; ?>"/> </td>
 </tr>
 </table>
 <input type='submit' name="update" value='Save' class='button button-primary'> &nbsp;&nbsp;
